@@ -4,15 +4,14 @@ from enum import Enum
 from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Optional, List, Union
-from uuid import UUID, uuid4
+# from uuid import UUID, uuid4
 
+# uncomment this if you want to get team names from a dictionary 
 
-
-
-class student_name(str, Enum):
-    misa = "misa xirinda M"
-    paul = "paul john U"
-    cate = "cate milo k"
+# class student_name(str, Enum):
+#     misa = "misa xirinda M"
+#     paul = "paul john U"
+#     cate = "cate pico k"
 
 
 class Project(BaseModel):
@@ -28,6 +27,8 @@ app = FastAPI(
     description='Bla description'
     )
 
+
+# dummy database
 db: List[Project] = [
     Project(
         project_id=44,
@@ -47,51 +48,31 @@ db: List[Project] = [
     )
 ]
 
-
-# class Item(BaseModel):
-#     id: Optional[uuid] = uuid4
-#     title: str
-#     description: str
-#     youtube: Optional[str]
-#     image: str
-#     team: str
-
-
-@app.get("/")
-async def view_project():
-    # return {"project_id": "acvdsdas12321", "title": "Random Title"}
+# get request
+@app.get("/general user/project/")
+# async def view_project():
+async def v_p():
     return db
 
-#
-# @app.post("/")
-# async def create_project(project: Project):
-#     # item_dict = item.dict()
-#     # if item.tax:
-#     #     price_with_tax = item.price + item.tax
-#     #     item_dict.update({"price_with_tax": price_with_tax})
-#     # return item_dict
-#     db.append(project)
-#     return {"id": Project.project_id}
-#
-#
-# # @app.put("/modify/{b_id}")
-# # async def modify_project(id: int, item: Item):
-async def modify_project(item_id: int, item: Item, q: Union[str, None] = None):
-    result = {"item_id": item_id, **item.dict()}
-    if q:
-        result.update({"q": q})
+# post request
+@app.post("/student/project")
+async def create_project(item: Project):
+    db.append(item)
+    return item
+
+# put request
+@app.put("/student/project/")
+async def modify_project(title: str, item: Project):
+    result = {"title": title, **item.dict()}
+    if item:
+        result.update({"item": item})
     return result
-    return {"item_name": item.name, "item_id": item_id}
-#
-#
-# @app.delete("/delete/{p_id}")
-# async def delete_user(p_id: UUID):
-#     for project in db:
-#         if project.project_id == p_id:
-#             db.remove(project)
-#             return
-#
-#         # title = "brain box",
-#         # description = "To store and display students project",
-#         # youtube = "https://youtu.be/GN6ICac3OXY",
-#         # team = student_name.misa,
+    return {"title": title, "project_id": project_id}
+
+# delete request
+@app.delete("/student/project/")
+async def d_u(p_id: int):
+    for project in db:
+        if project.project_id == p_id:
+            db.remove(project)
+            return
