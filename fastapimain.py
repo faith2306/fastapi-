@@ -1,13 +1,12 @@
-import uuid
-from enum import Enum
-
 from fastapi import FastAPI
+from typing import Union
 from pydantic import BaseModel
+from enum import Enum
 from typing import Optional, List, Union
-# from uuid import UUID, uuid4
+from uuid import UUID, uuid4
+
 
 # uncomment this if you want to get team names from a dictionary 
-
 # class student_name(str, Enum):
 #     misa = "misa xirinda M"
 #     paul = "paul john U"
@@ -15,18 +14,10 @@ from typing import Optional, List, Union
 
 
 class Project(BaseModel):
-    project_id: int  # Optional[uuid] = uuid4
+    project_id: Union[float, None] = None
     title: str
     description: str
-    youtube: Optional[str]
-    image: Optional[str]
-    team: List[student_name]
-
-app = FastAPI(
-    title='Brain Box',
-    description='Bla description'
-    )
-
+    team: str
 
 # dummy database
 db: List[Project] = [
@@ -35,18 +26,26 @@ db: List[Project] = [
         title="brain box",
         description="To store and display students project",
         youtube="https://youtu.be/GN6ICac3OXY",
+        #team=student_name.misa, dont forget to change this back
         team=student_name.misa,
     ),
 
     Project(
         title="Gubugklakah SRS",
         description="Get recommendations on services to "
-                    "\n provide during a vacation season ",
+                    "provide during a vacation season ",
         youtube="https://youtu.be/GN6ICac3OXY",
         image="villageLandscape.png",
         team=student_name.paul,
     )
 ]
+
+app = FastAPI(
+    title='Project service',
+    description='project service using fastapi '
+    )
+
+
 
 # get request
 @app.get("/general user/project/")
@@ -60,14 +59,6 @@ async def create_project(item: Project):
     db.append(item)
     return item
 
-# put request
-@app.put("/student/project/")
-async def modify_project(title: str, item: Project):
-    result = {"title": title, **item.dict()}
-    if item:
-        result.update({"item": item})
-    return result
-    return {"title": title, "project_id": project_id}
 
 # delete request
 @app.delete("/student/project/")
@@ -76,3 +67,4 @@ async def d_u(p_id: int):
         if project.project_id == p_id:
             db.remove(project)
             return
+
